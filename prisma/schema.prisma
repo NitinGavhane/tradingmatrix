@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  category         String
+  description      String
+  images           String[]
+  videoUrl         String?
+  frames360        String[]
+  wholesaleMoq     Int
+  wholesalePrice   Float
+  consumerMoq      Int
+  consumerPrice    Float
+  retailerMoq      Int
+  retailerPrice    Float
+  nasioUrl         String
+  marketPrice      Float?
+  retailStorePrice Float?
+  inStock          Boolean  @default(true)
+  tags             String[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  prebookRequests PrebookRequest[]
+}
+
+model PrebookRequest {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id])
+  customerName  String
+  customerEmail String
+  customerPhone String
+  mode          String   // "wholesale" | "retailer" | "consumer"
+  quantity      Int
+  message       String?
+  status        String   @default("pending")
+  createdAt     DateTime @default(now())
+}
